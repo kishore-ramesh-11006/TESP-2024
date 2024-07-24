@@ -17,9 +17,9 @@ class Main:
     self.model = mujoco.MjModel.from_xml_path(f"{self.script_dir}/src/scene.xml")
     self.mujoco_data = mujoco.MjData(self.model)
     self.timestep = self.model.opt.timestep
+    self.run()
   
   def run(self):
-    script_dir = self.script_dir
     model = self.model
     data=self.mujoco_data    
 
@@ -55,6 +55,7 @@ class Main:
       while True:
         serialized_data = client_socket.recv(4096)
         if not serialized_data:
+
           break
         self.data = pickle.loads(serialized_data)
       

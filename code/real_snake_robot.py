@@ -2,9 +2,9 @@ import time
 import socket
 import threading
 import numpy as np
-import mujoco_snake
+import mujoco_snake_martina as mujoco_snake_martina
 
-class Main(mujoco_snake.Main):
+class Main(mujoco_snake_martina.Main):
     
     def __init__(self):
         super().__init__()
@@ -21,6 +21,7 @@ class Main(mujoco_snake.Main):
             step_start = time.time()
 
             target_q = self.get_target_q()
+            print("i received this data: ", target_q)
             message = ",".join(map(str, target_q))
 
             client_socket.sendto(message.encode(), (snake_robot_ip, snake_robot_port))
