@@ -9,6 +9,7 @@ class Main(mujoco_snake.Main):
     def __init__(self):
         super().__init__()
 
+
     def run(self):
         snake_robot_ip = "10.240.77.116"
         snake_robot_port = 5000

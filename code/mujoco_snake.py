@@ -11,15 +11,17 @@ import math
 class Main:
 
   def __init__(self):
-    self.data = None
     self.data = [0,0]
     self.theta=0
+    self.script_dir = os.path.dirname(os.path.abspath(__file__))
+    self.model = mujoco.MjModel.from_xml_path(f"{self.script_dir}/src/scene.xml")
+    self.mujoco_data = mujoco.MjData(self.model)
+    self.timestep = self.model.opt.timestep
   
   def run(self):
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    model = mujoco.MjModel.from_xml_path(f"{script_dir}/src/scene.xml")
-    data = mujoco.MjData(model)
-    self.timestep = model.opt.timestep
+    script_dir = self.script_dir
+    model = self.model
+    data=self.mujoco_data    
 
     with mujoco.viewer.launch_passive(model, data) as viewer:
       viewer.cam.type = 1
