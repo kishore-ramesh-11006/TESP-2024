@@ -1,6 +1,6 @@
 import random
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 # this program is so-called making maze.
 # The task is to create a maze, and the goal is to output the maze image when this program is executed.
@@ -39,10 +39,7 @@ def make_maze(ny, nx):
         
         # Create the code to carve the path
         for j in range(2):
-            """
-            ~~~~~~~~~~~~
-            ~~~~~~~~~~~~
-            """
+            maze_base[ny + dy[i][j]][nx + dx[i][j]] = 0
 
         # Move to the carved point and call the function recursively
         make_maze(ny+dy[i][1], nx+dx[i][1])
@@ -76,17 +73,23 @@ def save_maze_as_png(binary_maze, start, goal, filename):
     """
     height = len(binary_maze)
     width = len(binary_maze[0])
-    image = Image.new('L', (width, height))
+    image = Image.new('RGB', (width, height))
     for y in range(height):
         for x in range(width):
-            image.putpixel((x, y), 255 * binary_maze[y][x])
+            image.putpixel((x, y),tuple(r * binary_maze[y][x] for r in (255,255,255)))            
     
     # Create marking the start and goal points
     draw = ImageDraw.Draw(image)
-    """
-    ~~~~~~~~~~~~~~~
-    ~~~~~~~~~~~~~~~
-    """
+    start_x, start_y = start
+    goal_x, goal_y = goal
+    start_loc_img=[start_x * 100, start_y * 100, (start_x + 1) * 100 - 1, (start_y + 1) * 100 - 1]
+    goal_loc_img=[goal_x * 100, goal_y * 100, (goal_x + 1) * 100 - 1, (goal_y + 1) * 100 - 1]
+
+    draw.ellipse(start_loc_img, fill=(255,255,255),outline = (255,0,0),width = 10)
+    draw.ellipse(goal_loc_img, fill=(255,255,255),outline = (0,255,0),width = 10)
+
+    # draw.text(start_loc_img,text="S", fill=(255,0,0),width = 5,align="centre",font=ImageFont.truetype(r'C:\\Users\\System-Pc\\Desktop\\arial.ttf',100))
+    # draw.text(goal_loc_img,text="G", fill=(0,255,0),width = 5,align="centre",font=ImageFont.truetype(r'C:\\Users\\System-Pc\\Desktop\\arial.ttf',100))
 
     image.save(filename)
 
@@ -96,7 +99,7 @@ start_y = 1
 
 # Create the maze
 make_maze(start_y, start_x)
-
+print(maze_base)
 # Calculate the distance to each point in the maze
 distances = bfs((start_x, start_y))
 # Set the farthest point as the goal
@@ -113,7 +116,7 @@ print("enter yyyymmdd")
 date = input()
 
 # Save the maze image with the start and goal points marked
-save_maze_as_png(maze_base, (start_x, start_y), farthest_point, 'C:/Users/gkeik/Documents/TESP2024_v1/TESP2024_v1/make_maze/maze_' + str(date) + '.png')
+save_maze_as_png(maze_base, (start_x, start_y), farthest_point, 'D:\KISHORE\CONFERENCES\TESP\COURSE\TESP2024\Maze_' + str(date) + '.png')
 
 # Display the start point and the goal point
 print("start=({}, {})".format(start_x, start_y))
