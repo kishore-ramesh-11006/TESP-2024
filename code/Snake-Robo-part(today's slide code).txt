@@ -1,0 +1,48 @@
+#Snake-Robo-part(today's slide)
+#this is about "test_control_snake.py"
+
+#1.SSH into the RasPi
+
+#Command to SSH
+ssh pi@10.240.77.116
+
+#Password
+hayashibelab
+
+#2.Activate the virtual environment on the RasPi
+source hirano-dev/envs/snake-robot-env/bin/activate
+
+#3.Navigate to Project Directory
+#Change to the project directory
+cd hirano-dev/projects/snake-robot-project/
+
+#4.Run Control Program on RasPi
+#Start the signal receiving and motor control program
+python app/snake_control_by_signal.py
+
+#5.Installing Required Libraries on PC
+#Install the keyboard input reading library on the control PC
+pip install keyboard
+
+#6.Run Control Signal Sending Program
+#Execute the control program on the PC
+#Pressing a or d on the keyboard changes the angle of the first servo
+python test_control_snake.py
+
+#7.Control Signal Format
+#The control signal sent to the RasPi is a comma-separated string
+#Each number corresponds to the angle [radian] of a servo
+msg="0,0,0,0,0,0,0,0,0,0,0,0"
+
+#8.Port and IP Configuration
+
+"
+#test_control_snake.py
+#Code default settings (usually unchanged)
+PORT=5000
+CLIENT="10.240.77.116" #snake robot IP address
+"
+
+
+
+
