@@ -7,6 +7,10 @@ import math
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
+ # list of wanted landmarks 
+wanted_pose_landmarks = [
+  PoseLandmark.RIGHT_WRIST, 
+    ]
 
 def main(use_socket=False, ip="127.0.0.1", port=8000):
   # For webcam input:
@@ -35,11 +39,20 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
       # Draw the pose annotation on the image.
       image.flags.writeable = True
       image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-      mp_drawing.draw_landmarks(
-          image,
-          results.pose_landmarks,
-          mp_pose.POSE_CONNECTIONS,
-          landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style())
+      
+      # Draw grid on image
+      height, width, channels = image.shape 
+      cv2.line(image,(0,int(height/2)),(int(width),int(height/2)),(255,0,0),5)
+      cv2.line(image,(int(width/2),0),(int(width/2),int(height)),(255,0,0),5)
+
+      #Draw landmark on the wrist
+      if results.pose_landmarks:
+                for landmark in wanted_pose_landmarks:
+                    landmark_pos = results.pose_landmarks.landmark[landmark.value]
+                    x, y = int(landmark_pos.x * width), int(landmark_pos.y * height)
+                    cv2.circle(image, (x, y), 30, (0, 255, 0), -1)
+
+      
       # Flip the image horizontally for a selfie-view display.
       cv2.imshow('Output', cv2.flip(image, 1))
 
