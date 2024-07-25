@@ -44,6 +44,7 @@ class Main:
 
                     x = self.data[0]
                     y = self.data[1]
+                    print(self.data[2])
                     data.ctrl[:] = self.get_target_q(x,y)
                     
                     mujoco.mj_step(model, data)
