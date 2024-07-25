@@ -65,21 +65,24 @@ def get_joint_angles(results):
   # For example, to get right shoulder location, use [results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_SHOULDER].x, results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_SHOULDER].y]
   # See link below for location of body parts
   # https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker
+  '''
   left_shoulder=[results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_SHOULDER].x, results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_SHOULDER].y]
   right_shoulder=[results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_SHOULDER].x, results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_SHOULDER].y]
   right_elbow=[results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ELBOW].x, results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ELBOW].y]
+  '''
   right_wrist=[results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_WRIST].x, results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_WRIST].y]
-  
+  '''
   lshoul_rshoul = np.array(right_shoulder)-np.array(left_shoulder)
   shoul_elb = np.array(right_elbow)-np.array(right_shoulder)
   elb_wris=np.array(right_wrist)-np.array(right_elbow)
-
+  
 
   shoul_elb_rad=math.acos(np.dot(lshoul_rshoul,shoul_elb)/(np.linalg.norm(shoul_elb)*np.linalg.norm(lshoul_rshoul)))
   elb_wris_rad = math.acos(np.dot(shoul_elb,elb_wris)/(np.linalg.norm(shoul_elb)*np.linalg.norm(elb_wris)))
   shoul_elb_deg=math.degrees(shoul_elb_rad)
   elb_wris_deg = math.degrees(elb_wris_rad)
   print(right_wrist)
+  '''
   return [right_wrist[0],right_wrist[1]]
 
 if __name__ == "__main__":

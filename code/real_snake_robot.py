@@ -2,9 +2,9 @@ import time
 import socket
 import threading
 import numpy as np
-import mujoco_snake_martina as mujoco_snake_martina
+import code.mujoco_snake as mujoco_snake
 
-class Main(mujoco_snake_martina.Main):
+class Main(mujoco_snake.Main):
     
     def __init__(self):
         super().__init__()
