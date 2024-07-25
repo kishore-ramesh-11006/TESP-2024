@@ -94,7 +94,7 @@ class Main:
         for i in range(0,12):
             phi=np.pi/4
             target_q[i]=amp*np.sin(self.theta+phi*i) + B
-        return target_qs
+        return target_q
 
     
 
