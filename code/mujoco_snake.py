@@ -6,7 +6,6 @@ import threading
 import numpy as np
 import mujoco
 import mujoco.viewer
-import keyboard
 
 class Main:
 
