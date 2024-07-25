@@ -51,7 +51,7 @@ class Main:
                     step_start = time.time()
                     if keyboard.is_pressed('i') and not self.plotting:
                         self.plotting = True
-                        self.plot_thread = threading.Thread(target=lp, args=(self.time_data, self.omega_data, self.plotting))
+                        self.plot_thread = threading.Thread(target=lp, args=(self.time_data, self.omega_data, self.lock))
                         self.plot_thread.start()
 
                     x = self.data[0]
@@ -104,19 +104,19 @@ class Main:
                 B=-B
             else:
                 elu = alpha * (np.exp(omeg) - 1)
-            omeg = 3*omeg + elu
+            omeg = omeg + elu
+            
 
+            self.theta=self.theta+omeg*self.timestep 
 
-            self.theta=self.theta+omeg*self.timestep
             for i in range(0,12):
                 phi=np.pi/4
                 target_q[i]=amp*np.sin(self.theta+phi*i) + B
         else:
             #stop the snake robot if the right wrist is not in the frame
             omeg=0
-            B=0.3
             self.theta=0
-
+            B=0.3
             for i in range(0,12):
                 phi=np.pi/4
                 target_q[i]=amp*np.sin(self.theta+phi*i) + B

@@ -1,29 +1,29 @@
 import matplotlib.pyplot as plt
-import time
-import threading
-lock = threading.Lock()
+import matplotlib.animation as animation
 
-def live_plot(time_data, omega_data, plotting):
-        plt.ion()
-        fig, ax = plt.subplots()
-        line, = ax.plot(time_data, omega_data, 'r-')
-        ax.set_xlabel('Time (s)')
-        ax.set_ylabel('Omega')
+def live_plot(time_data, omega_data, lock):
+    fig, ax = plt.subplots()
+    line, = ax.plot([], [], 'r-')
+    ax.set_xlabel('Time (s)')
+    ax.set_ylabel('Omega')
 
-        while plotting:
-            #make time_data and omega_data same size
+    def init():
+        line.set_data([], [])
+        return line,
+
+    def update(frame):
+        with lock:
             if len(time_data) > len(omega_data):
-                time_data = time_data[:len(omega_data)]
+                time_data.pop()
             elif len(omega_data) > len(time_data):
-                omega_data = omega_data[:len(time_data)]
-            with lock:
-                line.set_xdata(time_data)
-                line.set_ydata(omega_data)
-            ax.relim()
-            ax.autoscale_view()
-            fig.canvas.draw()
-            fig.canvas.flush_events()
-            time.sleep(0.1)
-        print("plotting")
-        plt.ioff()
-        plt.show()
+                omega_data.pop()
+            line.set_data(time_data, omega_data)
+        ax.relim()
+        ax.autoscale_view()
+        return line,
+
+    ani = animation.FuncAnimation(fig, update, init_func=init, blit=True, interval=100)
+    plt.show()
+
+
+# The rest of your code remains the same
