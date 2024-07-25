@@ -77,24 +77,35 @@ class Main:
         '''
     
         target_q=np.zeros(12)
-        
-        
-        omeg=(6*self.data[1])-3
-        #make th snake go faster if it is going forward and slower if it is going backwards
-        '''
-        This function returns the exponential linear unit (ELU) activation function
-        https://paperswithcode.com/method/elu
-        '''
-        if omeg >= 0:
-            elu = 0.1*omeg
+        is_hand_in_frame = self.data[2]
+        if is_hand_in_frame:
+            
+            omeg=(6*self.data[1])-3
+            #make th snake go faster if it is going forward and slower if it is going backwards
+            '''
+            This function returns the exponential linear unit (ELU) activation function
+            https://paperswithcode.com/method/elu
+            '''
+            if omeg >= 0:
+                elu = 0.1*omeg
+            else:
+                elu = alpha * (np.exp(omeg) - 1)
+            omeg = 2*omeg + elu
+            self.theta=self.theta+omeg*self.timestep
+            B=0.3-(0.6*self.data[0]) #this linear combinations guarantees that the offset 
+            for i in range(0,12):
+                phi=np.pi/4
+                target_q[i]=amp*np.sin(self.theta+phi*i) + B
         else:
-            elu = alpha * (np.exp(omeg) - 1)
-        omeg = 2*omeg + elu
-        self.theta=self.theta+omeg*self.timestep
-        B=0.3-(0.6*self.data[0]) #this linear combinations guarantees that the offset 
-        for i in range(0,12):
-            phi=np.pi/4
-            target_q[i]=amp*np.sin(self.theta+phi*i) + B
+            #stop the snake robot if the right wrist is not in the frame
+            omeg=0
+            B=0.3
+            self.theta=0
+
+            for i in range(0,12):
+                phi=np.pi/4
+                target_q[i]=amp*np.sin(self.theta+phi*i) + B
+        
         return target_q
 
     
