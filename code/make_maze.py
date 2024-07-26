@@ -116,7 +116,7 @@ print("enter yyyymmdd")
 date = input()
 
 # Save the maze image with the start and goal points marked
-save_maze_as_png(maze_base, (start_x, start_y), farthest_point, 'D:\KISHORE\CONFERENCES\TESP\COURSE\TESP2024\Maze_' + str(date) + '.png')
+save_maze_as_png(maze_base, (start_x, start_y), farthest_point, '\Maze_' + str(date) + '.png')
 
 # Display the start point and the goal point
 print("start=({}, {})".format(start_x, start_y))
