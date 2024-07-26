@@ -13,7 +13,7 @@ from utils.live_plot import live_plot as lp
 
 class Main:
     def __init__(self):
-        self.data = None
+        self.data = [0,0,0]
         self.start_time = time.time()
         self.theta = 0
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -47,7 +47,7 @@ class Main:
                 #if the up arrow key is pressed, the snake will move forward
                 
 
-                while self.data != None:
+                while self.data != [0,0,0]:
                     step_start = time.time()
                     if keyboard.is_pressed('i') and not self.plotting:
                         self.plotting = True

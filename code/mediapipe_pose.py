@@ -59,20 +59,20 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
       if results.pose_landmarks:
         data = get_joint_angles(results)
       else:
-        data = None
+        data = [0,0,0]
       
       image = cv2.flip(image, 1)
       # Border for signalization if the hand is in the frame
       if not data[2]: # not in the frame
         image = cv2.copyMakeBorder(image, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=[0, 0, 255]) 
         
-        sizeText = cv2.getTextSize("PUT RIGHT HAND IN TO THE FRAME", cv2.FONT_HERSHEY_PLAIN, 3, 2)[0]
+        sizeText = cv2.getTextSize("PUT RIGHT HAND IN TO THE FRAME", cv2.FONT_HERSHEY_PLAIN, 1.5, 2)[0]
 
         cv2.rectangle(image, (int(width/2) - (sizeText[0]//2) - 6, int(height/2) + sizeText[1] + 6),
                                   (int(width/2) + (sizeText[0]//2) + 6, int(height/2) - sizeText[1]//2 - 6), (0, 0, 255),
                                   thickness=cv2.FILLED)
         cv2.putText(image, "PUT RIGHT HAND IN TO THE FRAME", (int(width/2) - (sizeText[0]//2), (int(height/2)+sizeText[1])),
-                    cv2.FONT_HERSHEY_PLAIN, 3, (255, 255, 255), 2)
+                    cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), 2)
       else:
         image = cv2.copyMakeBorder(image, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=[0, 255, 0]) 
       
@@ -114,7 +114,7 @@ def get_joint_angles(results):
   return [right_wrist[0],right_wrist[1],is_hand_in_frame]
 
 if __name__ == "__main__":
-  use_socket = False
+  use_socket = True
   ip = "127.0.0.1"
   port = 8000
   main(use_socket=use_socket, ip=ip, port=port)
