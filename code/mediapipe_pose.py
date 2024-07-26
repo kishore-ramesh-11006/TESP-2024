@@ -3,6 +3,7 @@ import pickle
 import numpy as np
 import cv2
 import mediapipe as mp
+from mediapipe.python.solutions.pose import PoseLandmark
 import math
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -12,9 +13,12 @@ wanted_pose_landmarks = [
   PoseLandmark.RIGHT_WRIST, 
     ]
 
+is_hand_in_frame = False
+
 def main(use_socket=False, ip="127.0.0.1", port=8000):
   # For webcam input:
   cap = cv2.VideoCapture(0)
+  is_hand_in_frame = False
 
   if use_socket:
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -52,15 +56,29 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
                     x, y = int(landmark_pos.x * width), int(landmark_pos.y * height)
                     cv2.circle(image, (x, y), 30, (0, 255, 0), -1)
 
-      
-      # Flip the image horizontally for a selfie-view display.
-      cv2.imshow('Output', cv2.flip(image, 1))
-
       if results.pose_landmarks:
         data = get_joint_angles(results)
       else:
         data = None
       
+      image = cv2.flip(image, 1)
+      # Border for signalization if the hand is in the frame
+      if not data[2]: # not in the frame
+        image = cv2.copyMakeBorder(image, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=[0, 0, 255]) 
+        
+        sizeText = cv2.getTextSize("PUT RIGHT HAND IN TO THE FRAME", cv2.FONT_HERSHEY_PLAIN, 3, 2)[0]
+
+        cv2.rectangle(image, (int(width/2) - (sizeText[0]//2) - 6, int(height/2) + sizeText[1] + 6),
+                                  (int(width/2) + (sizeText[0]//2) + 6, int(height/2) - sizeText[1]//2 - 6), (0, 0, 255),
+                                  thickness=cv2.FILLED)
+        cv2.putText(image, "PUT RIGHT HAND IN TO THE FRAME", (int(width/2) - (sizeText[0]//2), (int(height/2)+sizeText[1])),
+                    cv2.FONT_HERSHEY_PLAIN, 3, (255, 255, 255), 2)
+      else:
+        image = cv2.copyMakeBorder(image, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=[0, 255, 0]) 
+      
+      # Flip the image horizontally for a selfie-view display.
+      cv2.imshow('Output', image)
+
       if use_socket:
         serialized_data = pickle.dumps(data)
         client_socket.send(serialized_data)  
@@ -84,6 +102,7 @@ def get_joint_angles(results):
   right_elbow=[results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ELBOW].x, results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ELBOW].y]
   '''
   right_wrist=[results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_WRIST].x, results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_WRIST].y]
+  global is_hand_in_frame
   if results.pose_landmarks:
         is_hand_in_frame = (
             0 <= right_wrist[0] <= 1 and
@@ -96,7 +115,7 @@ def get_joint_angles(results):
   return [right_wrist[0],right_wrist[1],is_hand_in_frame]
 
 if __name__ == "__main__":
-  use_socket = True
+  use_socket = False
   ip = "127.0.0.1"
   port = 8000
   main(use_socket=use_socket, ip=ip, port=port)
