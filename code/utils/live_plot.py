@@ -17,7 +17,7 @@ def live_plot(time_data, omega_data, lock):
                 time_data.pop()
             elif len(omega_data) > len(time_data):
                 omega_data.pop()
-            line.set_data(time_data, omega_data)
+            line.set_data(time_data, -omega_data)
         ax.relim()
         ax.autoscale_view()
         return line,

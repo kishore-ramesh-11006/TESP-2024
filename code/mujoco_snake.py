@@ -25,7 +25,7 @@ class Main:
         self.time_data = []
         self.omega_data = []
         self.lock = threading.Lock()
-  
+
     def run(self):
         script_dir = self.script_dir
         model = self.model
@@ -34,6 +34,10 @@ class Main:
             viewer.cam.type = 1
             viewer.cam.trackbodyid = 0
             viewer.cam.distance = 2
+            #make the camera look from a different angle
+            viewer.cam.elevation = -90
+            viewer.cam.azimuth = 0
+         
 
             mujoco.mj_step(model, data)
             viewer.sync()

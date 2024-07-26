@@ -20,5 +20,7 @@
   <worldbody>
     <light pos="0 0 1.5" dir="0 0 -1" directional="true"/>
     <geom name="floor" size="0 0 0.05" type="plane" material="groundplane"/>
-  </worldbody>
+    <!-- Add a camera here -->
+    <camera name="birdseye" pos="0 0 10" xyaxes="1 0 0 0 1 0" elevation="-90", azimuth="100"/>
+    </worldbody>
 </mujoco>
