@@ -85,8 +85,8 @@ def save_maze_as_png(binary_maze, start, goal, filename):
     start_loc_img=[start_x * 100, start_y * 100, (start_x + 1) * 100 - 1, (start_y + 1) * 100 - 1]
     goal_loc_img=[goal_x * 100, goal_y * 100, (goal_x + 1) * 100 - 1, (goal_y + 1) * 100 - 1]
 
-    draw.ellipse(start_loc_img, fill=(255,255,255),outline = (255,0,0),width = 10)
-    draw.ellipse(goal_loc_img, fill=(255,255,255),outline = (0,255,0),width = 10)
+    # draw.ellipse(start_loc_img, fill=(255,255,255),outline = (255,0,0),width = 10)
+    # draw.ellipse(goal_loc_img, fill=(255,255,255),outline = (0,255,0),width = 10)
 
     # draw.text(start_loc_img,text="S", fill=(255,0,0),width = 5,align="centre",font=ImageFont.truetype(r'C:\\Users\\System-Pc\\Desktop\\arial.ttf',100))
     # draw.text(goal_loc_img,text="G", fill=(0,255,0),width = 5,align="centre",font=ImageFont.truetype(r'C:\\Users\\System-Pc\\Desktop\\arial.ttf',100))

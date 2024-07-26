@@ -15,7 +15,7 @@ class Main:
         self.theta = 0
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
 
-        self.model= mujoco.MjModel.from_xml_path(f"{self.script_dir}/src/scene.xml")
+        self.model= mujoco.MjModel.from_xml_path(f"{self.script_dir}/src/scene_maze.xml")
         self.timestep = self.model.opt.timestep
   
     def run(self):
