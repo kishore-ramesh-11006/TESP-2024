@@ -5,7 +5,6 @@ import cv2
 import mediapipe as mp
 from mediapipe.python.solutions.pose import PoseLandmark
 import math
-from mediapipe.python.solutions.pose import PoseLandmark
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
