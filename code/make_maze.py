@@ -76,7 +76,7 @@ def save_maze_as_png(binary_maze, start, goal, filename):
     image = Image.new('RGB', (width, height))
     for y in range(height):
         for x in range(width):
-            image.putpixel((x, y),tuple(r * binary_maze[y][x] for r in (255,255,255)))            
+            image.putpixel((x, y),tuple(r * binary_maze[y][x] for r in (50,50,50)))            
     
     # Create marking the start and goal points
     draw = ImageDraw.Draw(image)
@@ -107,8 +107,8 @@ farthest_point = max(distances, key=distances.get)
 
 # Enlarge the maze size (100 times)
 maze_base = np.array(maze_base)
-maze_base = np.repeat(maze_base, 100, axis=0)
-maze_base = np.repeat(maze_base, 100, axis=1)
+maze_base = np.repeat(maze_base, 5, axis=0)
+maze_base = np.repeat(maze_base, 5, axis=1)
 maze_base = maze_base.tolist()
 
 # Prompt for the date input
@@ -116,7 +116,7 @@ print("enter yyyymmdd")
 date = input()
 
 # Save the maze image with the start and goal points marked
-save_maze_as_png(maze_base, (start_x, start_y), farthest_point, '\Maze_' + str(date) + '.png')
+save_maze_as_png(maze_base, (start_x, start_y), farthest_point, 'src/assets/Maze_' + str(date) + '.png')
 
 # Display the start point and the goal point
 print("start=({}, {})".format(start_x, start_y))

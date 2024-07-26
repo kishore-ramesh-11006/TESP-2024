@@ -70,7 +70,7 @@ class Main:
                         time.sleep(time_until_next_step) 
 
     
-    def get_target_q(self,x,y,amp=1,alpha=0.1):
+    def get_target_q(self,x,y,amp=0.7,alpha=0.1):
         '''
         This function returns the target joint angles for the snake robot
 
@@ -93,7 +93,7 @@ class Main:
         target_q=np.zeros(12)
         is_hand_in_frame = self.data[2]
         if is_hand_in_frame:
-            omeg=(6*self.data[1])-3
+            omeg=0.75*((-6*self.data[1])+3)
             B=0.3-(0.6*self.data[0]) #this linear combinations guarantees that the offset
 
             '''
