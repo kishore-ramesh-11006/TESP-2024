@@ -5,6 +5,7 @@ import cv2
 import mediapipe as mp
 from mediapipe.python.solutions.pose import PoseLandmark
 import math
+from mediapipe.python.solutions.pose import PoseLandmark
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
@@ -110,7 +111,6 @@ def get_joint_angles(results):
         )
   else:
         is_hand_in_frame = False
-  #check if the right wrist is in the frame
 
   return [right_wrist[0],right_wrist[1],is_hand_in_frame]
 
