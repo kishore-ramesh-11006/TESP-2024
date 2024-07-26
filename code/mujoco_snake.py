@@ -6,9 +6,12 @@ import threading
 import numpy as np
 import mujoco
 import mujoco.viewer
+import keyboard
+#import the live_plot function from the live_plot.py file
+from utils.live_plot import live_plot as lp
+
 
 class Main:
-
     def __init__(self):
         self.data = None
         self.start_time = time.time()
@@ -17,6 +20,11 @@ class Main:
 
         self.model= mujoco.MjModel.from_xml_path(f"{self.script_dir}/src/scene_maze.xml")
         self.timestep = self.model.opt.timestep
+
+        self.plotting = False
+        self.time_data = []
+        self.omega_data = []
+        self.lock = threading.Lock()
   
     def run(self):
         script_dir = self.script_dir
@@ -38,12 +46,16 @@ class Main:
                 step_start = time.time()
                 #if the up arrow key is pressed, the snake will move forward
                 
+
                 while self.data != None:
                     step_start = time.time()
+                    if keyboard.is_pressed('i') and not self.plotting:
+                        self.plotting = True
+                        self.plot_thread = threading.Thread(target=lp, args=(self.time_data, self.omega_data, self.lock))
+                        self.plot_thread.start()
 
                     x = self.data[0]
                     y = self.data[1]
-                    print(self.data[2])
                     data.ctrl[:] = self.get_target_q(x,y)
                     
                     mujoco.mj_step(model, data)
@@ -72,39 +84,46 @@ class Main:
 
         Returns:
         target_q: list of floats, target joint angles for the snake robot
-
         '''
     
         target_q=np.zeros(12)
         is_hand_in_frame = self.data[2]
         if is_hand_in_frame:
-            
             omeg=(6*self.data[1])-3
-            #make th snake go faster if it is going forward and slower if it is going backwards
+            B=0.3-(0.6*self.data[0]) #this linear combinations guarantees that the offset
+
             '''
+            make th snake go faster if it is going forward and slower if it is going backwards
+            
+               
             This function returns the exponential linear unit (ELU) activation function
             https://paperswithcode.com/method/elu
             '''
             if omeg >= 0:
                 elu = 0.1*omeg
+                B=-B
             else:
                 elu = alpha * (np.exp(omeg) - 1)
-            omeg = 2*omeg + elu
-            self.theta=self.theta+omeg*self.timestep
-            B=0.3-(0.6*self.data[0]) #this linear combinations guarantees that the offset 
+            omeg = omeg + elu
+            
+
+            self.theta=self.theta+omeg*self.timestep 
+
             for i in range(0,12):
                 phi=np.pi/4
                 target_q[i]=amp*np.sin(self.theta+phi*i) + B
         else:
             #stop the snake robot if the right wrist is not in the frame
             omeg=0
-            B=0.3
             self.theta=0
-
+            B=0.3
             for i in range(0,12):
                 phi=np.pi/4
                 target_q[i]=amp*np.sin(self.theta+phi*i) + B
-        
+        with self.lock:
+            self.omega_data.append(omeg)
+            self.time_data.append(time.time() - self.start_time)
+       
         return target_q
 
     
