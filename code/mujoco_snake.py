@@ -29,6 +29,8 @@ class Main:
         self.omega_data = []
         self.lock = threading.Lock()
 
+        self.is_goal = False
+
 
 
 
@@ -75,9 +77,7 @@ class Main:
                     x = self.data[0]
                     y = self.data[1]
                     data.ctrl[:] = self.get_target_q(x,y)
-                    if is_goal(model, data):
-                        print("Goal reached!")
-                        break
+                    self.is_goal = is_goal(model, data)
                     
                     mujoco.mj_step(model, data)
                     viewer.sync()
@@ -162,6 +162,7 @@ class Main:
                 if not serialized_data:
                     break
                 self.data = pickle.loads(serialized_data)
+                client_socket.send(pickle.dumps(self.is_goal))
             
             client_socket.close()
             server_socket.close()
