@@ -15,11 +15,11 @@ wanted_pose_landmarks = [
     ]
 
 is_hand_in_frame = False
-goal_is_reached = False
 def main(use_socket=False, ip="127.0.0.1", port=8000):
   # For webcam input:
   cap = cv2.VideoCapture(0)
   start_time = time.time()
+  goal_is_reached = False
 
   if use_socket:
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -63,7 +63,7 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
         cv2.putText(image, "1", (int(width/2) - (sizeText[0]//2), (int(height/2)+sizeText[1])),cv2.FONT_HERSHEY_PLAIN, 4, (255, 255, 255), 2)
 
       else:
-        while not goal_is_reached:
+        if not goal_is_reached:
           image.flags.writeable = False
           image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
           results = pose.process(image)
@@ -164,7 +164,12 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
                         cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), 2)
           else:
             image = cv2.copyMakeBorder(image, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=[0, 255, 0]) 
-      
+        else:
+          data = [0,0,0]
+          image[:] = (0, 0, 0)
+          sizeText = cv2.getTextSize("GAME OVER", cv2.FONT_HERSHEY_PLAIN, 2, 2)[0]
+          cv2.putText(image, "GAME OVER", (int(width/2) - (sizeText[0]//2), (int(height/2)+sizeText[1])),cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), 2)
+        
         cv2.imshow('Output', image)
 
         if use_socket:
@@ -176,9 +181,7 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
         if cv2.waitKey(5) & 0xFF == 27:
           break
       
-      image[:] = (0, 0, 0)
-      sizeText = cv2.getTextSize("GAME OVER", cv2.FONT_HERSHEY_PLAIN, 2, 2)[0]
-      cv2.putText(image, "GAME OVER", (int(width/2) - (sizeText[0]//2), (int(height/2)+sizeText[1])),cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), 2)
+      
 
   cap.release()
 
