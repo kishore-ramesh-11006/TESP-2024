@@ -29,6 +29,8 @@ class Main:
         self.omega_data = []
         self.lock = threading.Lock()
 
+        self.is_goal = False
+
 
 
 
@@ -39,18 +41,13 @@ class Main:
         data = mujoco.MjData(model)
         with mujoco.viewer.launch_passive(model, data) as viewer:
             viewer.cam.type = 1
-            viewer.cam.trackbodyid = 1
+            viewer.cam.trackbodyid = 0
             viewer.cam.distance = 2
-
-        
             #make the camera look from a different angle
             viewer.cam.elevation = -90
             viewer.cam.azimuth = 0
             #zoom out 
-            viewer.cam.distance += 1
-            #set the field of view
-
-            
+            viewer.cam.distance += 20
 
             mujoco.mj_step(model, data)
             viewer.sync()
@@ -58,10 +55,13 @@ class Main:
              
             self.prev_time = time.time()
             while viewer.is_running():
-
+                viewer.cam.trackbodyid = 1
                 #get the value of th keyBoard buttons that are pressed
                 step_start = time.time()
-                #if the up arrow key is pressed, the snake will move forward
+                # Zoom in 
+                while viewer.cam.distance > 3:
+                    viewer.cam.distance -= 1
+                    time.sleep(0.1)                
                 
 
                 while self.data != [0,0,0]:
@@ -75,9 +75,7 @@ class Main:
                     x = self.data[0]
                     y = self.data[1]
                     data.ctrl[:] = self.get_target_q(x,y)
-                    if is_goal(model, data):
-                        print("Goal reached!")
-                        break
+                    self.is_goal = is_goal(model, data)
                     
                     mujoco.mj_step(model, data)
                     viewer.sync()
@@ -162,6 +160,7 @@ class Main:
                 if not serialized_data:
                     break
                 self.data = pickle.loads(serialized_data)
+                client_socket.send(pickle.dumps(self.is_goal))
             
             client_socket.close()
             server_socket.close()

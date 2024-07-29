@@ -99,6 +99,7 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
           cv2.arrowedLine(image, start_point, end_point, color, thickness, tipLength=0.2)
           # text next to the arrow
           sizeText = cv2.getTextSize("BACKWARD", cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
+          sizeText = cv2.getTextSize("BACKWARD", cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
           cv2.rectangle(image, (int(width * 0.1) - (sizeText[0]//2) - 6, int(height * 0.55) + (int(height * 0.25)) + sizeText[1] + 6),
                                     (int(width * 0.1) + (sizeText[0]//2) + 6, int(height * 0.55) + int(height * 0.25) - sizeText[1]//2 - 6), (0, 255, 0),
                                     thickness=cv2.FILLED)
@@ -111,6 +112,7 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
           color = (0, 255, 0)  
           thickness = 3
           # text next to the arrow
+          sizeText = cv2.getTextSize("FORWARD", cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
           sizeText = cv2.getTextSize("FORWARD", cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
           cv2.rectangle(image, (int(width * 0.1) - (sizeText[0]//2) - 6, int(height * 0.45) - (int(height * 0.25)) + sizeText[1] + 6),
                                     (int(width * 0.1) + (sizeText[0]//2) + 6, int(height * 0.45) - int(height * 0.25) - sizeText[1]//2 - 6), (0, 255, 0),
