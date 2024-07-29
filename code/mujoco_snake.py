@@ -38,19 +38,18 @@ class Main:
         data = mujoco.MjData(model)
         with mujoco.viewer.launch_passive(model, data) as viewer:
             viewer.cam.type = 1
-            viewer.cam.trackbodyid = 0
+            viewer.cam.trackbodyid = 1
             viewer.cam.distance = 2
+
         
             #make the camera look from a different angle
             viewer.cam.elevation = -90
             viewer.cam.azimuth = 0
             #zoom out 
             viewer.cam.distance += 1
+            #set the field of view
+
             
-            if keyboard.is_pressed('s'):
-                self.spawn_object('red_ball')
-            elif keyboard.is_pressed('r'):
-                self.remove_object()
 
             mujoco.mj_step(model, data)
             viewer.sync()

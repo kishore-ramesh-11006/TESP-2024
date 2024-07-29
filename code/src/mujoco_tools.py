@@ -80,6 +80,6 @@ if __name__ == "__main__":
   goal_rgba = "0.6 0.9 0.6 0.5"
   save_file_path = "scene_maze.xml"
 
-  save_maze_as_png(maze, start_pos, goal_pos, "Maze_123.png")
+  
   
   make_maze_on_mujoco(load_file_path, maze, start_pos, goal_pos, box_size=box_size, maze_rgba=maze_rgba, goal_rgba=goal_rgba, save_file_path=save_file_path)
