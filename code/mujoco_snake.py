@@ -11,6 +11,7 @@ import keyboard
 from utils.live_plot import live_plot as lp
 from PIL import Image
 from scipy import ndimage
+from src.mujoco_tools import is_goal 
 
 
 class Main:
@@ -27,6 +28,8 @@ class Main:
         self.time_data = []
         self.omega_data = []
         self.lock = threading.Lock()
+
+        self.is_goal = False
 
 
 
@@ -62,6 +65,7 @@ class Main:
                 
 
                 while self.data != [0,0,0]:
+
                     step_start = time.time()
                     if keyboard.is_pressed('i') and not self.plotting:
                         self.plotting = True
@@ -71,6 +75,7 @@ class Main:
                     x = self.data[0]
                     y = self.data[1]
                     data.ctrl[:] = self.get_target_q(x,y)
+                    self.is_goal = is_goal(model, data)
                     
                     mujoco.mj_step(model, data)
                     viewer.sync()
@@ -103,7 +108,7 @@ class Main:
         target_q=np.zeros(12)
         is_hand_in_frame = self.data[2]
         if is_hand_in_frame:
-            omeg=0.75*((-6*self.data[1])+3)
+            omeg=1.5*((-6*self.data[1])+3)
             B=0.3-(0.6*self.data[0]) #this linear combinations guarantees that the offset
 
             '''
@@ -155,6 +160,7 @@ class Main:
                 if not serialized_data:
                     break
                 self.data = pickle.loads(serialized_data)
+                client_socket.send(pickle.dumps(self.is_goal))
             
             client_socket.close()
             server_socket.close()
