@@ -170,16 +170,16 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
           sizeText = cv2.getTextSize("GAME OVER", cv2.FONT_HERSHEY_PLAIN, 2, 2)[0]
           cv2.putText(image, "GAME OVER", (int(width/2) - (sizeText[0]//2), (int(height/2)+sizeText[1])),cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), 2)
         
-        cv2.imshow('Output', image)
+      cv2.imshow('Output', image)
 
-        if use_socket:
-          serialized_data = pickle.dumps(data)
-          client_socket.send(serialized_data)  
-          receive = client_socket.recv(4096)
-          goal_is_reached = pickle.loads(receive)
-          
-        if cv2.waitKey(5) & 0xFF == 27:
-          break
+      if use_socket:
+        serialized_data = pickle.dumps(data)
+        client_socket.send(serialized_data)  
+        receive = client_socket.recv(4096)
+        goal_is_reached = pickle.loads(receive)
+        
+      if cv2.waitKey(5) & 0xFF == 27:
+        break
       
       
 
