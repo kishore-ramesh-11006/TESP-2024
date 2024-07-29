@@ -1,3 +1,12 @@
 Fri Jul 26 11:08:42 2024
 WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 95.4000.
 
+Mon Jul 29 11:51:14 2024
+ERROR: mjv_updateCamera: track body id is outside valid range
+
+Mon Jul 29 11:51:46 2024
+ERROR: mjv_updateCamera: track body id is outside valid range
+
+Mon Jul 29 11:52:34 2024
+ERROR: mjv_updateCamera: track body id is outside valid range
+
