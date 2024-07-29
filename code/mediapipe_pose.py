@@ -98,12 +98,12 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
           thickness = 3
           cv2.arrowedLine(image, start_point, end_point, color, thickness, tipLength=0.2)
           # text next to the arrow
-          sizeText = cv2.getTextSize("BACKWARD", cv2.FONT_HERSHEY_PLAIN, 1, 1.5)[0]
+          sizeText = cv2.getTextSize("BACKWARD", cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
           cv2.rectangle(image, (int(width * 0.1) - (sizeText[0]//2) - 6, int(height * 0.55) + (int(height * 0.25)) + sizeText[1] + 6),
                                     (int(width * 0.1) + (sizeText[0]//2) + 6, int(height * 0.55) + int(height * 0.25) - sizeText[1]//2 - 6), (0, 255, 0),
                                     thickness=cv2.FILLED)
           cv2.putText(image, "BACKWARD", (int(width * 0.1) - (sizeText[0]//2), (int(height * 0.55) + int(height * 0.25) +sizeText[1])),
-                      cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 1.5)
+                      cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 0), 1)
 
           #arrow pointing up 
           start_point = (int(width * 0.1), int(height * 0.45))
@@ -111,12 +111,12 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
           color = (0, 255, 0)  
           thickness = 3
           # text next to the arrow
-          sizeText = cv2.getTextSize("FORWARD", cv2.FONT_HERSHEY_PLAIN, 1, 1.5)[0]
+          sizeText = cv2.getTextSize("FORWARD", cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
           cv2.rectangle(image, (int(width * 0.1) - (sizeText[0]//2) - 6, int(height * 0.45) - (int(height * 0.25)) + sizeText[1] + 6),
                                     (int(width * 0.1) + (sizeText[0]//2) + 6, int(height * 0.45) - int(height * 0.25) - sizeText[1]//2 - 6), (0, 255, 0),
                                     thickness=cv2.FILLED)
           cv2.putText(image, "FORWARD", (int(width * 0.1) - (sizeText[0]//2), (int(height * 0.45) - int(height * 0.25) +sizeText[1])),
-                      cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 1.5)
+                      cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 0), 1)
 
 
           cv2.arrowedLine(image, start_point, end_point, color, thickness, tipLength=0.2)
@@ -126,12 +126,28 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
           color = (0, 255, 0) 
           thickness = 3
           cv2.arrowedLine(image, start_point, end_point, color, thickness, tipLength=0.2)
+          # text next to the arrow
+          sizeText = cv2.getTextSize("LEFT", cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
+          cv2.rectangle(image, (int(width * 0.45) - int(height * 0.2) - (sizeText[0]//2) - 6, int(height * 0.9) - (int(height * 0.08)) + sizeText[1] + 6),
+                                    (int(width * 0.45) - int(height * 0.2) + (sizeText[0]//2) + 6, int(height * 0.9) - int(height * 0.08) - sizeText[1]//2 - 6), (0, 255, 0),
+                                    thickness=cv2.FILLED)
+          cv2.putText(image, "LEFT", (int(width * 0.45) - int(height * 0.2) - (sizeText[0]//2), (int(height * 0.9) - int(height * 0.08) +sizeText[1])),
+                      cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 0), 1)
+          
           #arrow pointing right
           start_point = (int(width * 0.55), int(height * 0.9))
           end_point = (int(width * 0.55) + int(height * 0.2), int(height * 0.9))
           color = (0, 255, 0)  
           thickness = 3
           cv2.arrowedLine(image, start_point, end_point, color, thickness, tipLength=0.2)
+          # text next to the arrow
+          sizeText = cv2.getTextSize("RIGHT", cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
+          cv2.rectangle(image, (int(width * 0.55) + int(height * 0.2) - (sizeText[0]//2) - 6, int(height * 0.9) - (int(height * 0.08)) + sizeText[1] + 6),
+                                    (int(width * 0.55) + int(height * 0.2) + (sizeText[0]//2) + 6, int(height * 0.9) - int(height * 0.08) - sizeText[1]//2 - 6), (0, 255, 0),
+                                    thickness=cv2.FILLED)
+          cv2.putText(image, "RIGHT", (int(width * 0.55) + int(height * 0.2) - (sizeText[0]//2), (int(height * 0.9) - int(height * 0.08) +sizeText[1])),
+                      cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 0), 1)
+          
 
         # Border for signalization if the hand is in the frame
         if not data[2]: # not in the frame
@@ -145,7 +161,7 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
           cv2.putText(image, "PUT RIGHT HAND IN TO THE FRAME", (int(width/2) - (sizeText[0]//2), (int(height/2)+sizeText[1])),
                       cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), 2)
         else:
-          image = cv2.copyMakeBorder(image, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=[0, 255, 0]) 
+          image = cv2.copyMakeBorder(image, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=[128, 128, 128]) 
       
       cv2.imshow('Output', image)
 
@@ -154,6 +170,7 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
         client_socket.send(serialized_data)  
         receive = client_socket.recv(4096)
         receive = pickle.loads(receive)
+        
 
       if cv2.waitKey(5) & 0xFF == 27:
         break
@@ -186,7 +203,7 @@ def get_joint_angles(results):
   return [right_wrist[0],right_wrist[1],is_hand_in_frame]
 
 if __name__ == "__main__":
-  use_socket = True
+  use_socket = False
   ip = "127.0.0.1"
   port = 8000
   main(use_socket=use_socket, ip=ip, port=port)
