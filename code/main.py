@@ -8,7 +8,7 @@ def run_script_in_new_terminal(script_name):
 run_script_in_new_terminal('mujoco_snake.py')
 
 # Wait for 5 seconds
-time.sleep(5)
+time.sleep(7)
 
 # Run the second script in a new terminal
 run_script_in_new_terminal('mediapipe_pose.py')

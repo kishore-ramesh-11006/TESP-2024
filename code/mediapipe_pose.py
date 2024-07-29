@@ -205,7 +205,7 @@ def get_joint_angles(results):
   return [right_wrist[0],right_wrist[1],is_hand_in_frame]
 
 if __name__ == "__main__":
-  use_socket = False
+  use_socket = True
   ip = "127.0.0.1"
   port = 8000
   main(use_socket=use_socket, ip=ip, port=port)
