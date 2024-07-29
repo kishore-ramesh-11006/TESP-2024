@@ -15,11 +15,10 @@ wanted_pose_landmarks = [
     ]
 
 is_hand_in_frame = False
-
+receive = False
 def main(use_socket=False, ip="127.0.0.1", port=8000):
   # For webcam input:
   cap = cv2.VideoCapture(0)
-  is_hand_in_frame = False
   start_time = time.time()
 
   if use_socket:
@@ -94,34 +93,42 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
         if (time.time() - start_time) >= 7 and (time.time() - start_time) < 17:
           #arrow pointing down
           start_point = (int(width * 0.1), int(height * 0.55))
-          end_point = (int(width * 0.1), int(height * 0.55) + 200)
+          end_point = (int(width * 0.1), int(height * 0.55) + int(height * 0.2))
           color = (0, 255, 0)  
           thickness = 3
           cv2.arrowedLine(image, start_point, end_point, color, thickness, tipLength=0.2)
           # text next to the arrow
-          sizeText = cv2.getTextSize("BACKWARD", cv2.FONT_HERSHEY_PLAIN, 1, 2)[0]
-          cv2.rectangle(image, (int(width * 0.1) - (sizeText[0]//2) - 6, int(height * 0.55) + 230 + sizeText[1] + 6),
-                                    (int(width * 0.1) + (sizeText[0]//2) + 6, int(height * 0.55) + 230 - sizeText[1]//2 - 6), (0, 255, 0),
+          sizeText = cv2.getTextSize("BACKWARD", cv2.FONT_HERSHEY_PLAIN, 1, 1.5)[0]
+          cv2.rectangle(image, (int(width * 0.1) - (sizeText[0]//2) - 6, int(height * 0.55) + (int(height * 0.25)) + sizeText[1] + 6),
+                                    (int(width * 0.1) + (sizeText[0]//2) + 6, int(height * 0.55) + int(height * 0.25) - sizeText[1]//2 - 6), (0, 255, 0),
                                     thickness=cv2.FILLED)
-          cv2.putText(image, "BACKWARD", (int(width * 0.1) - (sizeText[0]//2), (int(height * 0.55) + 230+sizeText[1])),
-                      cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 2)
+          cv2.putText(image, "BACKWARD", (int(width * 0.1) - (sizeText[0]//2), (int(height * 0.55) + int(height * 0.25) +sizeText[1])),
+                      cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 1.5)
 
           #arrow pointing up 
           start_point = (int(width * 0.1), int(height * 0.45))
-          end_point = (int(width * 0.1), int(height * 0.45) - 200)
+          end_point = (int(width * 0.1), int(height * 0.45) - int(height * 0.2))
           color = (0, 255, 0)  
           thickness = 3
+          # text next to the arrow
+          sizeText = cv2.getTextSize("FORWARD", cv2.FONT_HERSHEY_PLAIN, 1, 1.5)[0]
+          cv2.rectangle(image, (int(width * 0.1) - (sizeText[0]//2) - 6, int(height * 0.45) - (int(height * 0.25)) + sizeText[1] + 6),
+                                    (int(width * 0.1) + (sizeText[0]//2) + 6, int(height * 0.45) - int(height * 0.25) - sizeText[1]//2 - 6), (0, 255, 0),
+                                    thickness=cv2.FILLED)
+          cv2.putText(image, "FORWARD", (int(width * 0.1) - (sizeText[0]//2), (int(height * 0.45) - int(height * 0.25) +sizeText[1])),
+                      cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 1.5)
+
 
           cv2.arrowedLine(image, start_point, end_point, color, thickness, tipLength=0.2)
           #arrow pointing left 
           start_point = (int(width * 0.45), int(height * 0.9))
-          end_point = (int(width * 0.45) - 200, int(height * 0.9))
+          end_point = (int(width * 0.45) - int(height * 0.2), int(height * 0.9))
           color = (0, 255, 0) 
           thickness = 3
           cv2.arrowedLine(image, start_point, end_point, color, thickness, tipLength=0.2)
           #arrow pointing right
           start_point = (int(width * 0.55), int(height * 0.9))
-          end_point = (int(width * 0.55) + 200, int(height * 0.9))
+          end_point = (int(width * 0.55) + int(height * 0.2), int(height * 0.9))
           color = (0, 255, 0)  
           thickness = 3
           cv2.arrowedLine(image, start_point, end_point, color, thickness, tipLength=0.2)
@@ -145,6 +152,8 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
       if use_socket:
         serialized_data = pickle.dumps(data)
         client_socket.send(serialized_data)  
+        receive = client_socket.recv(4096)
+        receive = pickle.loads(receive)
 
       if cv2.waitKey(5) & 0xFF == 27:
         break
@@ -177,7 +186,7 @@ def get_joint_angles(results):
   return [right_wrist[0],right_wrist[1],is_hand_in_frame]
 
 if __name__ == "__main__":
-  use_socket = False
+  use_socket = True
   ip = "127.0.0.1"
   port = 8000
   main(use_socket=use_socket, ip=ip, port=port)
