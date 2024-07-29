@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 import numpy as np
-from make_maze import save_maze_as_png
+
 def make_maze_on_mujoco(load_file_path, maze, start_pos, goal_pos, box_size=[0.5, 0.5, 0.15], maze_rgba="0.5 0.5 0.5 1", goal_rgba="0.6 0.9 0.6 0.5", save_file_path=None):
   tree = ET.parse(load_file_path)
   root = tree.getroot()
