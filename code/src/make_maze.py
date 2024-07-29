@@ -93,31 +93,33 @@ def save_maze_as_png(binary_maze, start, goal, filename):
 
     image.save(filename)
 
-# Set the start point
-start_x = 1
-start_y = 1
+def main():
 
-# Create the maze
-make_maze(start_y, start_x)
-print(maze_base)
-# Calculate the distance to each point in the maze
-distances = bfs((start_x, start_y))
-# Set the farthest point as the goal
-farthest_point = max(distances, key=distances.get)
+    # Set the start point
+    start_x = 1
+    start_y = 1
 
-# Enlarge the maze size (100 times)
-maze_base = np.array(maze_base)
-maze_base = np.repeat(maze_base, 5, axis=0)
-maze_base = np.repeat(maze_base, 5, axis=1)
-maze_base = maze_base.tolist()
+    # Create the maze
+    make_maze(start_y, start_x)
+    print(maze_base)
+    # Calculate the distance to each point in the maze
+    distances = bfs((start_x, start_y))
+    # Set the farthest point as the goal
+    farthest_point = max(distances, key=distances.get)
 
-# Prompt for the date input
-print("enter yyyymmdd")
-date = input()
+    # Enlarge the maze size (100 times)
+    maze_base = np.array(maze_base)
+    maze_base = np.repeat(maze_base, 5, axis=0)
+    maze_base = np.repeat(maze_base, 5, axis=1)
+    maze_base = maze_base.tolist()
 
-# Save the maze image with the start and goal points marked
-save_maze_as_png(maze_base, (start_x, start_y), farthest_point, 'src/assets/Maze_' + str(date) + '.png')
+    # Prompt for the date input
+    print("enter yyyymmdd")
+    date = input()
 
-# Display the start point and the goal point
-print("start=({}, {})".format(start_x, start_y))
-print("goal=({}, {})".format(farthest_point[0], farthest_point[1]))
+    # Save the maze image with the start and goal points marked
+    save_maze_as_png(maze_base, (start_x, start_y), farthest_point, 'src/assets/Maze_' + str(date) + '.png')
+
+    # Display the start point and the goal point
+    print("start=({}, {})".format(start_x, start_y))
+    print("goal=({}, {})".format(farthest_point[0], farthest_point[1]))

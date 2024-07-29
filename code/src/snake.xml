@@ -13,7 +13,7 @@
     <light name="spotlight" mode="targetbodycom" target="frame_0-1" pos="0 -1 2"/>
     
     <!--  ================= SNAKE ================= /-->
-    <body name="frame_0-1" pos="-4.2 4 0">
+    <body name="frame_0-1" pos="0 0 0">
       <camera name="track" mode="trackcom" pos="0.5 1 1" xyaxes="-1 0 0 0 -1 1"/>
       <joint type="free"/>
       <geom density="1000" type="box" size=".0235 .014 .01675" pos= ".0235 0 .02675 " rgba="0.3 0.3 0.3 1"  /><!--motor box(head)-->
