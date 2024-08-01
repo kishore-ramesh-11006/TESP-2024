@@ -21,7 +21,8 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
   start_time = time.time()
   goal_is_reached = False
   game_started_time = 0
-
+  showTotalTime = False
+  total_time = 0
   if use_socket:
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((ip, port))
@@ -96,12 +97,12 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
           
           # Gaming time
           time_text = f'TIME: {(time.time() - game_started_time):.2f}'
-          sizeText = cv2.getTextSize(time_text, cv2.FONT_HERSHEY_PLAIN, 2, 1)[0]
+          sizeText = cv2.getTextSize(time_text, cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
           cv2.rectangle(image, (int(width * 0.85) - (sizeText[0]//2) - 6, int(height * 0.1) + sizeText[1] + 6),
                                     (int(width * 0.85) + (sizeText[0]//2) + 6, int(height * 0.1) - sizeText[1]//2 - 6), (0, 255, 0),
                                     thickness=cv2.FILLED)
           cv2.putText(image,time_text, (int(width * 0.85) - (sizeText[0]//2), (int(height * 0.1) +sizeText[1])),
-                      cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 0), 1)
+                      cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 0), 1)
           
           # tutorial arrows
           if (time.time() - start_time) >= 7 and (time.time() - start_time) < 17:
@@ -173,12 +174,15 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
           else:
             image = cv2.copyMakeBorder(image, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=[0, 255, 0]) 
         else:
+          if not showTotalTime:
+            total_time = time.time() - game_started_time
+            showTotalTime = True
           data = [0,0,0]
           image[:] = (0, 0, 0)
-          sizeTextG = cv2.getTextSize("GAME OVER", cv2.FONT_HERSHEY_PLAIN, 2, 2)[0]
-          cv2.putText(image, "GAME OVER", (int(width/2) - (sizeTextG[0]//2), (int(height/2)+sizeTextG[1])),cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), 2)
+          sizeTextG = cv2.getTextSize("SUCCESS", cv2.FONT_HERSHEY_PLAIN, 2, 2)[0]
+          cv2.putText(image, "SUCCESS", (int(width/2) - (sizeTextG[0]//2), (int(height/2)+sizeTextG[1])),cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), 2)
 
-          time_text = f'TOTAL TIME: {(time.time() - game_started_time):.2f}'
+          time_text = f'TOTAL TIME: {(total_time):.2f}'
           sizeText = cv2.getTextSize(time_text, cv2.FONT_HERSHEY_PLAIN, 2, 1)[0]
           cv2.putText(image,time_text, (int(width/2) - (sizeText[0]//2), (int(height/2)+sizeText[1] + int(sizeTextG[1]*2))),
                       cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), 2)
@@ -221,7 +225,7 @@ def get_joint_angles(results):
   return [right_wrist[0],right_wrist[1],is_hand_in_frame]
 
 if __name__ == "__main__":
-  use_socket = True
+  use_socket = False
   ip = "127.0.0.1"
   port = 8000
   main(use_socket=use_socket, ip=ip, port=port)
