@@ -20,6 +20,7 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
   cap = cv2.VideoCapture(0)
   start_time = time.time()
   goal_is_reached = False
+  game_started_time = 0
 
   if use_socket:
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -61,8 +62,10 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
         image[:] = (0, 0, 0)
         sizeText = cv2.getTextSize("1", cv2.FONT_HERSHEY_PLAIN, 4, 2)[0]
         cv2.putText(image, "1", (int(width/2) - (sizeText[0]//2), (int(height/2)+sizeText[1])),cv2.FONT_HERSHEY_PLAIN, 4, (255, 255, 255), 2)
-
       else:
+        if (game_started_time == 0):
+          game_started_time = time.time()
+
         if not goal_is_reached:
           image.flags.writeable = False
           image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -78,10 +81,10 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
 
           #Draw landmark on the wrist
           if results.pose_landmarks:
-                    for landmark in wanted_pose_landmarks:
-                        landmark_pos = results.pose_landmarks.landmark[landmark.value]
-                        x, y = int(landmark_pos.x * width), int(landmark_pos.y * height)
-                        cv2.circle(image, (x, y), 30, (0, 255, 0), -1)
+            for landmark in wanted_pose_landmarks:
+                landmark_pos = results.pose_landmarks.landmark[landmark.value]
+                x, y = int(landmark_pos.x * width), int(landmark_pos.y * height)
+                cv2.circle(image, (x, y), 30, (0, 255, 0), -1)
 
           if results.pose_landmarks:
             data = get_joint_angles(results)
@@ -90,6 +93,16 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
           
           # Flip the image horizontally for a selfie-view display.
           image = cv2.flip(image, 1)
+          
+          # Gaming time
+          time_text = f'TIME: {(time.time() - game_started_time):.2f}'
+          sizeText = cv2.getTextSize(time_text, cv2.FONT_HERSHEY_PLAIN, 2, 1)[0]
+          cv2.rectangle(image, (int(width * 0.85) - (sizeText[0]//2) - 6, int(height * 0.1) + sizeText[1] + 6),
+                                    (int(width * 0.85) + (sizeText[0]//2) + 6, int(height * 0.1) - sizeText[1]//2 - 6), (0, 255, 0),
+                                    thickness=cv2.FILLED)
+          cv2.putText(image,time_text, (int(width * 0.85) - (sizeText[0]//2), (int(height * 0.1) +sizeText[1])),
+                      cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 0), 1)
+          
           # tutorial arrows
           if (time.time() - start_time) >= 7 and (time.time() - start_time) < 17:
             #arrow pointing down
@@ -99,7 +112,6 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
             thickness = 3
             cv2.arrowedLine(image, start_point, end_point, color, thickness, tipLength=0.2)
             # text next to the arrow
-            sizeText = cv2.getTextSize("BACKWARD", cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
             sizeText = cv2.getTextSize("BACKWARD", cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
             cv2.rectangle(image, (int(width * 0.1) - (sizeText[0]//2) - 6, int(height * 0.55) + (int(height * 0.25)) + sizeText[1] + 6),
                                       (int(width * 0.1) + (sizeText[0]//2) + 6, int(height * 0.55) + int(height * 0.25) - sizeText[1]//2 - 6), (0, 255, 0),
@@ -112,16 +124,14 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
             end_point = (int(width * 0.1), int(height * 0.45) - int(height * 0.2))
             color = (0, 255, 0)  
             thickness = 3
+            cv2.arrowedLine(image, start_point, end_point, color, thickness, tipLength=0.2)
             # text next to the arrow
-            sizeText = cv2.getTextSize("FORWARD", cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
             sizeText = cv2.getTextSize("FORWARD", cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
             cv2.rectangle(image, (int(width * 0.1) - (sizeText[0]//2) - 6, int(height * 0.45) - (int(height * 0.25)) + sizeText[1] + 6),
                                       (int(width * 0.1) + (sizeText[0]//2) + 6, int(height * 0.45) - int(height * 0.25) - sizeText[1]//2 - 6), (0, 255, 0),
                                       thickness=cv2.FILLED)
             cv2.putText(image, "FORWARD", (int(width * 0.1) - (sizeText[0]//2), (int(height * 0.45) - int(height * 0.25) +sizeText[1])),
                         cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 0), 1)
-
-            cv2.arrowedLine(image, start_point, end_point, color, thickness, tipLength=0.2)
             #arrow pointing left 
             start_point = (int(width * 0.45), int(height * 0.9))
             end_point = (int(width * 0.45) - int(height * 0.2), int(height * 0.9))
@@ -149,8 +159,6 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
                                       thickness=cv2.FILLED)
             cv2.putText(image, "RIGHT", (int(width * 0.55) + int(height * 0.2) - (sizeText[0]//2), (int(height * 0.9) - int(height * 0.08) +sizeText[1])),
                         cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 0), 1)
-            
-
           # Border for signalization if the hand is in the frame
           if not data[2]: # not in the frame
             image = cv2.copyMakeBorder(image, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=[0, 0, 255]) 
@@ -167,9 +175,13 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
         else:
           data = [0,0,0]
           image[:] = (0, 0, 0)
-          sizeText = cv2.getTextSize("GAME OVER", cv2.FONT_HERSHEY_PLAIN, 2, 2)[0]
-          cv2.putText(image, "GAME OVER", (int(width/2) - (sizeText[0]//2), (int(height/2)+sizeText[1])),cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), 2)
-        
+          sizeTextG = cv2.getTextSize("GAME OVER", cv2.FONT_HERSHEY_PLAIN, 2, 2)[0]
+          cv2.putText(image, "GAME OVER", (int(width/2) - (sizeTextG[0]//2), (int(height/2)+sizeTextG[1])),cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), 2)
+
+          time_text = f'TOTAL TIME: {(time.time() - game_started_time):.2f}'
+          sizeText = cv2.getTextSize(time_text, cv2.FONT_HERSHEY_PLAIN, 2, 1)[0]
+          cv2.putText(image,time_text, (int(width/2) - (sizeText[0]//2), (int(height/2)+sizeText[1] + int(sizeTextG[1]*2))),
+                      cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), 2)
       cv2.imshow('Output', image)
 
       if use_socket:
@@ -181,8 +193,6 @@ def main(use_socket=False, ip="127.0.0.1", port=8000):
       if cv2.waitKey(5) & 0xFF == 27:
         break
       
-      
-
   cap.release()
 
   if use_socket:
