@@ -51,7 +51,7 @@ class Main:
 
             mujoco.mj_step(model, data)
             viewer.sync()
-            time.sleep(2)
+            time.sleep(5)
              
             self.prev_time = time.time()
             while viewer.is_running():
